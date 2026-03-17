@@ -45,11 +45,11 @@ const navItems = [
     href: "/dashboard/linhas",
     icon: Route,
   },
-  // {
-  //   label: "Ônibus",
-  //   href: "/dashboard/onibus",
-  //   icon: Bus,
-  // },
+  {
+    label: "Ônibus",
+    href: "/dashboard/onibus",
+    icon: Bus,
+  },
   // {
   //   label: "Configurações",
   //   href: "/dashboard/configuracoes",

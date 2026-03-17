@@ -21,7 +21,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
             const userData = await authApi.me();
             setUser(userData);
-            console.log(userData);
         } catch (error) {
             setUser(null);
             console.error("Error fetching user data:", error);

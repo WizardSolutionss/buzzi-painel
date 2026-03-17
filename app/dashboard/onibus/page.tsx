@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { BusLine } from "@/types/busLine";
-import { BusLineFormData } from "@/schemas/busLineSchema";
-import { BusLineTable } from "@/components/BusLineTable";
-import { BusLineForm } from "@/components/BusLineForm";
+import { Bus } from "@/types/bus";
+import { BusFormData } from "@/schemas/busSchema";
+import { BusTable } from "@/components/BusTable";
+import { BusForm } from "@/components/BusForm";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,24 +13,24 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { Plus, Search, Route, Loader2 } from "lucide-react";
+import { Plus, Search, Bus as BusIcon, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { linhasApi } from "@/lib/api/linhas";
+import { onibusApi } from "@/lib/api/onibus";
 
-export default function LinhasPage() {
-    const [lines, setLines] = useState<BusLine[]>([]);
+export default function OnibusPage() {
+    const [buses, setBuses] = useState<Bus[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [editing, setEditing] = useState<BusLine | null>(null);
+    const [editing, setEditing] = useState<Bus | null>(null);
 
-    const fetchLines = async () => {
+    const fetchBuses = async () => {
         setLoading(true);
         try {
-            const data = await linhasApi.getAll();
-            setLines(data);
+            const data = await onibusApi.getAll();
+            setBuses(data);
         } catch (error) {
-            toast.error("Erro ao carregar linhas");
+            toast.error("Erro ao carregar ônibus");
             console.error(error);
         } finally {
             setLoading(false);
@@ -38,52 +38,53 @@ export default function LinhasPage() {
     };
 
     useEffect(() => {
-        fetchLines();
+        fetchBuses();
     }, []);
 
     const filtered = useMemo(() => {
-        if (!search.trim()) return lines;
+        if (!search.trim()) return buses;
         const q = search.toLowerCase();
-        return lines.filter(
-            (l) =>
-                l.code.toLowerCase().includes(q) ||
-                l.name.toLowerCase().includes(q)
+        return buses.filter(
+            (b) =>
+                b.name.toLowerCase().includes(q) ||
+                b.plate.toLowerCase().includes(q) ||
+                b.imei.toLowerCase().includes(q)
         );
-    }, [lines, search]);
+    }, [buses, search]);
 
-    const handleCreate = async (data: BusLineFormData) => {
+    const handleCreate = async (data: BusFormData) => {
         try {
-            await linhasApi.create(data);
-            await fetchLines();
+            await onibusApi.create(data);
+            await fetchBuses();
             setDialogOpen(false);
-            toast.success("Linha criada com sucesso!");
+            toast.success("Ônibus cadastrado com sucesso!");
         } catch (error) {
-            toast.error("Erro ao criar linha");
+            toast.error("Erro ao cadastrar ônibus");
             console.error(error);
         }
     };
 
-    const handleEdit = async (data: BusLineFormData) => {
+    const handleEdit = async (data: BusFormData) => {
         if (!editing) return;
         try {
-            await linhasApi.update(editing.id, data);
-            await fetchLines();
+            await onibusApi.update(editing.id, data);
+            await fetchBuses();
             setEditing(null);
             setDialogOpen(false);
-            toast.success("Linha atualizada!");
+            toast.success("Ônibus atualizado!");
         } catch (error) {
-            toast.error("Erro ao atualizar linha");
+            toast.error("Erro ao atualizar ônibus");
             console.error(error);
         }
     };
 
     const handleDelete = async (id: string) => {
         try {
-            await linhasApi.delete(id);
-            setLines((prev) => prev.filter((l) => l.id !== id));
-            toast.success("Linha excluída.");
+            await onibusApi.delete(id);
+            setBuses((prev) => prev.filter((b) => b.id !== id));
+            toast.success("Ônibus excluído.");
         } catch (error) {
-            toast.error("Erro ao excluir linha");
+            toast.error("Erro ao excluir ônibus");
             console.error(error);
         }
     };
@@ -93,12 +94,8 @@ export default function LinhasPage() {
         setDialogOpen(true);
     };
 
-    const openEdit = (line: BusLine) => {
-        const formData = {
-            ...line,
-            paradas: (line.paradas || []).map((p: any) => p.paradaId || p)
-        };
-        setEditing({ ...line, paradas: formData.paradas as any });
+    const openEdit = (bus: Bus) => {
+        setEditing(bus);
         setDialogOpen(true);
     };
 
@@ -109,13 +106,13 @@ export default function LinhasPage() {
                 <div className="flex items-center justify-between">
                     <div>
                         <div className="flex items-center gap-2 mb-1">
-                            <Route className="w-5 h-5 text-indigo-500" />
+                            <BusIcon className="w-5 h-5 text-indigo-500" />
                             <h1 className="text-xl font-bold text-slate-800">
-                                Linhas de Ônibus
+                                Frota de Ônibus
                             </h1>
                         </div>
                         <p className="text-sm text-slate-500">
-                            Gerencie todas as linhas do sistema
+                            Gerencie os veículos rodando no sistema
                         </p>
                     </div>
                     <Button
@@ -123,7 +120,7 @@ export default function LinhasPage() {
                         className="bg-[#3366FF] hover:bg-[#2255EE] text-white shadow-sm shadow-blue-200 gap-2"
                     >
                         <Plus className="w-4 h-4" />
-                        Nova Linha
+                        Novo Ônibus
                     </Button>
                 </div>
 
@@ -133,14 +130,14 @@ export default function LinhasPage() {
                         <div className="flex items-start justify-between">
                             <div>
                                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">
-                                    Total de Linhas
+                                    Total de Veículos
                                 </p>
                                 <p className="text-2xl font-bold text-slate-800">
-                                    {lines.length}
+                                    {buses.length}
                                 </p>
                             </div>
                             <div className="bg-indigo-500 w-10 h-10 rounded-xl flex items-center justify-center">
-                                <Route className="w-5 h-5 text-white" />
+                                <BusIcon className="w-5 h-5 text-white" />
                             </div>
                         </div>
                     </div>
@@ -155,12 +152,12 @@ export default function LinhasPage() {
                             <Input
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                placeholder="Buscar por código ou nome..."
+                                placeholder="Buscar placa, imei ou nome..."
                                 className="pl-9 h-8 text-sm border-slate-200 focus-visible:ring-[#3366FF]"
                             />
                         </div>
                         <p className="text-sm font-semibold text-slate-700">
-                            {filtered.length} linha{filtered.length !== 1 ? "s" : ""}
+                            {filtered.length} ônibus
                             {search && ` para "${search}"`}
                         </p>
                     </div>
@@ -170,11 +167,11 @@ export default function LinhasPage() {
                         {loading ? (
                             <div className="flex flex-col items-center justify-center py-20 text-slate-400">
                                 <Loader2 className="w-8 h-8 animate-spin mb-3 text-indigo-500 opacity-60" />
-                                <p className="text-sm font-medium">Carregando linhas...</p>
+                                <p className="text-sm font-medium">Carregando frota...</p>
                             </div>
                         ) : (
-                            <BusLineTable
-                                lines={filtered}
+                            <BusTable
+                                buses={filtered}
                                 onEdit={openEdit}
                                 onDelete={handleDelete}
                             />
@@ -194,10 +191,10 @@ export default function LinhasPage() {
                 <DialogContent className="max-w-lg">
                     <DialogHeader>
                         <DialogTitle className="text-lg font-bold text-slate-800">
-                            {editing ? "Editar Linha" : "Nova Linha"}
+                            {editing ? "Editar Ônibus" : "Cadastrar Novo Ônibus"}
                         </DialogTitle>
                     </DialogHeader>
-                    <BusLineForm
+                    <BusForm
                         initial={editing ?? undefined}
                         onSubmit={editing ? handleEdit : handleCreate}
                         onCancel={() => {

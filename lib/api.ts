@@ -1,4 +1,6 @@
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = process.env.NODE_ENV === "development"
+    ? "http://localhost:3000"
+    : "https://buzzi-backend-production.up.railway.app";
 
 async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
     const response = await fetch(`${BASE_URL}${endpoint}`, {
