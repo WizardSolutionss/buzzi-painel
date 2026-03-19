@@ -48,6 +48,7 @@ export default function ParadasPage() {
     return stops.filter(
       (s) =>
         s.name.toLowerCase().includes(q) ||
+        (s.address && s.address.toLowerCase().includes(q)) ||
         (s.linhas || []).some((item) =>
           item.linha.name.toLowerCase().includes(q) ||
           item.linha.code.toLowerCase().includes(q)
@@ -114,7 +115,7 @@ export default function ParadasPage() {
 
   return (
     <div className="flex-1 bg-slate-50/50 min-h-screen">
-      <div className="max-w-6xl mx-auto px-6 py-8 space-y-6">
+      <div className="max-w-8xl mx-auto px-6 py-8 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>

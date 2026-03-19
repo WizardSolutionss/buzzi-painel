@@ -5,6 +5,7 @@ export const busStopSchema = z.object({
     .string()
     .min(2, "Nome deve ter ao menos 2 caracteres")
     .max(100, "Nome muito longo"),
+  address: z.string().optional(),
   latitude: z
     .number({ message: "Latitude deve ser um número" })
     .min(-90, "Latitude inválida")
@@ -13,7 +14,7 @@ export const busStopSchema = z.object({
     .number({ message: "Longitude deve ser um número" })
     .min(-180, "Longitude inválida")
     .max(180, "Longitude inválida"),
-  lines: z.array(z.string()).default([]),
+  lines: z.array(z.string()),
 });
 
 export type BusStopFormData = z.infer<typeof busStopSchema>;

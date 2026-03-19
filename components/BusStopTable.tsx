@@ -50,6 +50,9 @@ export function BusStopTable({ stops, onEdit, onDelete }: BusStopTableProps) {
               Nome
             </TableHead>
             <TableHead className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              Endereço
+            </TableHead>
+            <TableHead className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
               Latitude
             </TableHead>
             <TableHead className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
@@ -76,6 +79,9 @@ export function BusStopTable({ stops, onEdit, onDelete }: BusStopTableProps) {
                   </div>
                   {stop.name}
                 </div>
+              </TableCell>
+              <TableCell className="text-slate-500 text-sm">
+                {stop.address || "-"}
               </TableCell>
               <TableCell className="text-slate-500 font-mono text-sm">
                 {stop.latitude.toFixed(4)}

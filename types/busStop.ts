@@ -1,6 +1,7 @@
 export interface BusStop {
   id: string;
   name: string;
+  address?: string;
   longitude: number;
   latitude: number;
   lines?: string[]; // Used for payload

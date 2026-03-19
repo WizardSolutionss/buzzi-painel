@@ -44,6 +44,7 @@ export function BusStopForm({ initial, onSubmit, onCancel }: BusStopFormProps) {
     resolver: zodResolver(busStopSchema),
     defaultValues: {
       name: initial?.name ?? "",
+      address: initial?.address ?? "",
       latitude: initial?.latitude ?? undefined,
       longitude: initial?.longitude ?? undefined,
       lines: initial?.lines ?? [],
@@ -112,6 +113,28 @@ export function BusStopForm({ initial, onSubmit, onCancel }: BusStopFormProps) {
                   placeholder="Ex: Terminal Central"
                   className="border-slate-200 focus-visible:ring-[#3366FF]"
                   {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Endereço */}
+        <FormField
+          control={form.control}
+          name="address"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm font-semibold text-slate-700">
+                Endereço
+              </FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Ex: Av. Paulista, 1000"
+                  className="border-slate-200 focus-visible:ring-[#3366FF]"
+                  {...field}
+                  value={field.value ?? ""}
                 />
               </FormControl>
               <FormMessage />
