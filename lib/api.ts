@@ -11,7 +11,7 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
             ...options?.headers,
         },
     });
-
+    // vai arrombado
     if (!response.ok) {
         const error = await response.json().catch(() => ({ message: "Erro desconhecido" }));
         throw new Error(error.message || `Erro ${response.status}: ${response.statusText}`);
