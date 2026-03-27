@@ -31,7 +31,7 @@ export function BusLineForm({ initial, onSubmit, onCancel }: BusLineFormProps) {
         defaultValues: {
             code: initial?.code ?? "",
             name: initial?.name ?? "",
-            paradas: initial?.paradas ?? [],
+            paradas: (initial?.paradas ?? []).map((p) => p.paradaId),
         },
     });
 
